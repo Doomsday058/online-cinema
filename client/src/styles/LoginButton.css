@@ -1,5 +1,5 @@
-/* src/styles/RegisterButton.css */
-.register-btn {
+/* LoginButton.css */
+.login-btn {
   font-size: 1rem;
   padding: 10px 20px;
   margin: 10px;
@@ -14,6 +14,6 @@
   font-size: 1.1rem; /* Увеличиваем размер шрифта */
 }
 
-.register-btn:hover {
+.login-btn:hover {
   background-color: #e6a117; /* Темнее оттенок акцентного цвета */
 }

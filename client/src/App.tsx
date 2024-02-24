@@ -1,20 +1,37 @@
-import React from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+// src/App.tsx
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import CardDetails from './components/CardDetails';
 import CardList from './components/CardList';
 import Footer from './components/Footer';
 import NavBar from './components/NavBar';
-import RegisterButton from './components/RegisterButton';
+import AuthForm from './components/AuthForm';
+import LoginButton from './components/LoginButton';
 
 const App: React.FC = () => {
+  const [showAuthForm, setShowAuthForm] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
+
+  const onAuthenticate = (username: string) => {
+    setUser(username);
+    setShowAuthForm(false);
+  };
+
+  const toggleAuthForm = () => {
+    setShowAuthForm(!showAuthForm);
+  };
+
   return (
     <Router>
       <div className="App">
         <header className="App-header">
           <div className="header-content">
             <h1 className="page-title">FilmAdviser</h1>
-            <RegisterButton />
+          <div className="auth-elements">
+            {user ? <div className = "greeting-message">Welcome, {user}!</div> : <LoginButton onClick={toggleAuthForm} />}
+            {showAuthForm && <AuthForm onAuthenticate={onAuthenticate} />}
+          </div>
           </div>
         </header>
         <NavBar />
@@ -29,7 +46,6 @@ const App: React.FC = () => {
         <Footer />
       </div>
     </Router>
-    
   );
 };
 

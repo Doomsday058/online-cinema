@@ -22,11 +22,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
 }));
 
-// Модель для пользователя сохраняем, если требуется аутентификация
-const User = sequelize.define('user', {
-  // ...
-});
-
 // Модель для фильма
 const Movie = sequelize.define('movie', {
   id: {
@@ -70,6 +65,131 @@ const Serial = sequelize.define('serial', {
   tableName: 'serials' // Имя таблицы для сериалов
 });
 
+const User = sequelize.define('user', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    allowNull: false
+  },
+  username: Sequelize.STRING,
+  password: Sequelize.STRING // Пароли должны быть хэшированы
+});
+
+// Регистрация пользователя
+app.post("/api/register", async (req, res) => {
+  const { username, password } = req.body;
+
+  // Проверяем, существует ли уже пользователь с таким именем
+  const userExists = await User.findOne({ where: { username } });
+  if (userExists) {
+    return res.status(400).json({ message: 'User already exists' });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    const newUser = await User.create({ username, password: hashedPassword });
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+
+// Аутентификация пользователя
+app.post("/api/login", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ where: { username } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+    // Здесь можно создать и вернуть токен для аутентификации
+    res.status(200).json({ message: "Login successful" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Оценка фильма пользователем
+app.post("/api/movies/:id/rate", async (req, res) => {
+  const { userId } = req.body;
+  const { id } = req.params;
+  const { rating } = req.body;
+  try {
+    const movie = await Movie.findByPk(id);
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
+    }
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const existingRating = await Rating.findOne({ where: { userId, movieId: id } });
+    if (existingRating) {
+      await existingRating.update({ rating });
+    } else {
+      await Rating.create({ userId, movieId: id, rating });
+    }
+    res.status(200).json({ message: "Rating saved successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Получение списка оцененных фильмов пользователем
+app.get("/api/users/:userId/ratings", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const ratings = await Rating.findAll({ where: { userId } });
+    res.status(200).json(ratings);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+
+const Rating = sequelize.define('rating', {
+  userId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: User,
+      key: 'id'
+    }
+  },
+  movieId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: Movie, // или Serial
+      key: 'id'
+    }
+  },
+  rating: Sequelize.INTEGER
+});
+
+// Маршрут для получения списка пользователей
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Маршрут для получения списка оценок пользователей
+app.get("/api/ratings", async (req, res) => {
+  try {
+    const ratings = await Rating.findAll();
+    res.status(200).json(ratings);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 
 app.put("/api/movies/:id", function(request, response){
