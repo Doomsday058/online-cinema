@@ -17,4 +17,14 @@
     list-style: none;
     padding: 0;
   }
+  body{
+    display: flex;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: column;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
   

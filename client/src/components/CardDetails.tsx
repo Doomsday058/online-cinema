@@ -55,18 +55,32 @@ const CardDetails: React.FC<CardDetailsProps> = ({ type }) => {
 
   return (
     <div className="details-container">
+      <div className="details__img-wrapper">
       <img className="details-poster" src={data.poster_url} alt={data.title} />
+      </div>
       <div className="details-content">
         <h2 className="details-title">{data.title}</h2>
         <p className="details-summary">{data.description}</p>
-        <p>Rating: {data.rating}</p>
-        <p>Production Year: {data.production_year}</p>
-        <p>Duration: {data.duration} minutes</p>
-        <p>Country: {data.country}</p>
-        <p>Genre: {data.genre}</p>
-        <p>Director: {data.director}</p>
-        <p>Age Rating: {data.age_rating}</p>
-        <p>Main Roles: {data.main_roles}</p>
+        <div className="details-wrapper">
+        <dl className="details-dl">
+          <dt className="details-dt">Rating</dt>
+          <dd className="details-dd">{data.rating}</dd>
+          <dt className="details-dt">Production Year</dt>
+          <dd className="details-dd">{data.production_year}</dd>
+          <dt className="details-dt">Duration</dt>
+          <dd className="details-dd">{data.duration} minutes</dd>
+          <dt className="details-dt">Country</dt>
+          <dd className="details-dd">{data.country}</dd>
+          <dt className="details-dt">Genre</dt>
+          <dd className="details-dd">{data.genre}</dd>
+          <dt className="details-dt">Director</dt>
+          <dd className="details-dd">{data.director}</dd>
+          <dt className="details-dt">Age Rating</dt>
+          <dd className="details-dd">{data.age_rating}</dd>
+          <dt className="details-dt">Main Roles</dt>
+          <dd className="details-dd">{data.main_roles}</dd>
+        </dl>
+        </div>
       </div>
     </div>
   );

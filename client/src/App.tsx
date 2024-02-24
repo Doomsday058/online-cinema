@@ -1,11 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
+import CardDetails from './components/CardDetails';
+import CardList from './components/CardList';
+import Footer from './components/Footer';
 import NavBar from './components/NavBar';
 import RegisterButton from './components/RegisterButton';
-import Footer from './components/Footer';
-import CardList from './components/CardList';
-import CardDetails from './components/CardDetails';
 
 const App: React.FC = () => {
   return (
@@ -29,6 +29,7 @@ const App: React.FC = () => {
         <Footer />
       </div>
     </Router>
+    
   );
 };
 

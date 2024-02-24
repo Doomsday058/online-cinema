@@ -19,7 +19,9 @@ const Card: React.FC<CardProps> = ({ id, title, poster, rating, type }) => {
 
   return (
     <div className="card" onClick={handleClick}>
+      <div className="card__img-wrapper">
       <img src={poster} alt={title} className="card-poster" />
+      </div>
       <div className="card-info">
         <h3 className="card-title">{title}</h3>
         {rating && <div className="card-rating">⭐ {rating}</div>}
